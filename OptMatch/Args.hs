@@ -1,8 +1,9 @@
 module OptMatch.Args where
 
+import Control.Applicative
+import Control.Monad.State
 import qualified Data.List as L
 import OptMatch.Matcher
-import Control.Monad.State
 
 type Args = [String]
 
@@ -31,3 +32,15 @@ argument = do
   case args of
     [] -> mzero
     (x:xs) -> do { put xs; return x }
+
+anywhere :: Monad m => MatcherT Args m a -> MatcherT Args m a
+anywhere m = m <|> do
+  args <- get
+  case args of
+    [] -> mzero
+    (x:xs) -> do
+      put xs
+      a <- anywhere m
+      xs <- get
+      put (x:xs)
+      return a
