@@ -1,4 +1,8 @@
-module OptMatch.Matcher where
+module OptMatch.Matcher( Reply(..)
+                       , MatcherT(..)
+                       , match
+                       , flag
+                       , unflag ) where
 
 import Control.Applicative
 import Control.Monad
@@ -46,6 +50,13 @@ instance MonadTrans (MatcherT s) where
   lift m = MatcherT $ \s -> do
     a <- m
     return $ Continue a s
+
+match :: Monad m => MatcherT s m a -> s -> m (Maybe a)
+match m s = do
+  reply <- runMatcherT m s
+  case reply of
+    Continue a _ -> return $ Just a
+    Failed -> return Nothing
 
 flag :: Alternative f => f a -> f Bool
 flag m = const True <$> m <|> pure False
