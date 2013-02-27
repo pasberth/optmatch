@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module OptMatch.Matcher( Reply(..)
                        , MatcherT(..)
                        , match
@@ -6,6 +7,7 @@ module OptMatch.Matcher( Reply(..)
 
 import Control.Applicative
 import Control.Monad
+import Control.Monad.State
 import Control.Monad.Trans
 
 data Reply s a = Continue a s
@@ -45,6 +47,10 @@ instance Monad m => MonadPlus (MatcherT s m) where
     case reply of
       Failed -> runMatcherT k s
       otherwise -> return reply
+
+instance (Monad m) => MonadState s (MatcherT s m) where
+  get = MatcherT $ \s -> return $ Continue s s
+  put s = MatcherT $ \_ -> return $ Continue () s
 
 instance MonadTrans (MatcherT s) where
   lift m = MatcherT $ \s -> do
