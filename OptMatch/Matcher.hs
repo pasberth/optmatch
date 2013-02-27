@@ -47,9 +47,15 @@ instance MonadTrans (MatcherT s) where
     a <- m
     return $ Continue a s
 
-optional :: Monad m => MatcherT s m a -> MatcherT s m (Maybe a)
-optional m = MatcherT $ \s -> do
+switch :: Monad m => (a -> b) -> b -> MatcherT s m a -> MatcherT s m b
+switch f x m = MatcherT $ \s -> do
   reply <- runMatcherT m s
   case reply of
-    Continue a _ -> return $ Continue (Just a) s
-    Failed -> return $ Continue Nothing s
+    Continue a s -> return $ Continue (f a) s
+    Failed -> return $ Continue x s
+
+flag :: Monad m => MatcherT s m a -> MatcherT s m Bool
+flag = switch (const True) False
+
+unflag :: Monad m => MatcherT s m a -> MatcherT s m Bool
+unflag = switch (const False) True

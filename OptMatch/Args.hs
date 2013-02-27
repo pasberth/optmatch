@@ -1,5 +1,6 @@
 module OptMatch.Args where
 
+import qualified Data.List as L
 import OptMatch.Matcher
 
 type Args = [String]
@@ -11,20 +12,15 @@ keyword s = MatcherT $ \args -> case args of
     | otherwise -> return Failed
   otherwise -> return Failed
 
+prefix :: Monad m => String -> MatcherT Args m String
+prefix s = MatcherT $ \args -> case args of
+  (x:xs)
+    | L.isPrefixOf s x -> let Just x' = L.stripPrefix s x in
+      return $ Continue s (x':xs)
+    | otherwise -> return Failed
+  otherwise -> return Failed
+
 argument :: Monad m => MatcherT Args m String
 argument = MatcherT $ \args -> case args of
   (x:xs) -> return $ Continue x xs
   otherwise -> return Failed
-
-switch :: Monad m => String -> a -> a -> MatcherT Args m a
-switch s x y = do
-  a <- optional $ keyword s
-  case a of
-    Just _ -> return x
-    Nothing -> return y
-
-opton :: Monad m => String -> MatcherT Args m Bool
-opton s = switch s True False
-
-optoff :: Monad m => String -> MatcherT Args m Bool
-optoff s = switch s False True
