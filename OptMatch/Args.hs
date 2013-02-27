@@ -2,25 +2,32 @@ module OptMatch.Args where
 
 import qualified Data.List as L
 import OptMatch.Matcher
+import Control.Monad.State
 
 type Args = [String]
 
 keyword :: Monad m => String -> MatcherT Args m String
-keyword s = MatcherT $ \args -> case args of
-  (x:xs)
-    | x == s -> return $ Continue x xs
-    | otherwise -> return Failed
-  otherwise -> return Failed
+keyword s = do
+  args <- get
+  case args of
+    [] -> mzero
+    (x:xs)
+      | x == s -> do { put xs; return x }
+      | otherwise -> mzero
 
 prefix :: Monad m => String -> MatcherT Args m String
-prefix s = MatcherT $ \args -> case args of
-  (x:xs)
-    | L.isPrefixOf s x -> let Just x' = L.stripPrefix s x in
-      return $ Continue s (x':xs)
-    | otherwise -> return Failed
-  otherwise -> return Failed
+prefix s = do
+  args <- get
+  case args of
+    [] -> mzero
+    (x:xs)
+      | L.isPrefixOf s x -> let Just x' = L.stripPrefix s x in
+        do { put (x':xs); return x }
+      | otherwise -> mzero
 
 argument :: Monad m => MatcherT Args m String
-argument = MatcherT $ \args -> case args of
-  (x:xs) -> return $ Continue x xs
-  otherwise -> return Failed
+argument = do
+  args <- get
+  case args of
+    [] -> mzero
+    (x:xs) -> do { put xs; return x }

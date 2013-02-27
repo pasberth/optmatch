@@ -1,6 +1,5 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
-module OptMatch.Matcher( Reply(..)
-                       , MatcherT(..)
+module OptMatch.Matcher( MatcherT
                        , match
                        , flag
                        , unflag ) where
