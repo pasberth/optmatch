@@ -2,6 +2,7 @@ module OptMatch.Args where
 
 import Control.Applicative
 import Control.Monad.State
+import OptMatch.Util
 import OptMatch.Matcher
 
 type Args = [String]
