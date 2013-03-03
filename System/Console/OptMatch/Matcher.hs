@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 
-module OptMatch.Matcher( MatcherT
-                       , match ) where
+module System.Console.OptMatch.Matcher( MatcherT
+                                      , match ) where
 
 import Control.Applicative
 import Control.Monad

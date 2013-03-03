@@ -1,9 +1,9 @@
-module OptMatch.Args where
+module System.Console.OptMatch.Args where
 
 import Control.Applicative
 import Control.Monad.State
-import OptMatch.Util
-import OptMatch.Matcher
+import System.Console.OptMatch.Util
+import System.Console.OptMatch.Matcher
 
 type Args = [String]
 

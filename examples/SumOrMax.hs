@@ -1,7 +1,7 @@
 import Control.Applicative
 import Control.Monad.State
 import Control.Monad.Trans
-import OptMatch
+import System.Console.OptMatch
 import System.Environment(getArgs)
 
 data Options = Options {

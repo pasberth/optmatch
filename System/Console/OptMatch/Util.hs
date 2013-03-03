@@ -1,10 +1,10 @@
 {-# LANGUAGE FlexibleContexts #-}
 
-module OptMatch.Util( flag
-                    , unflag
-                    , expect
-                    , shift
-                    , unshift ) where
+module System.Console.OptMatch.Util( flag
+                                   , unflag
+                                   , expect
+                                   , shift
+                                   , unshift ) where
 
 import Control.Applicative
 import Control.Monad
