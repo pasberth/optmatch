@@ -31,7 +31,4 @@ shift = do
     (x:xs) -> do { put xs; return x }
 
 unshift :: MonadState [a] m => a -> m [a]
-unshift x = do
-  xs <- get
-  put (x:xs)
-  get
+unshift x = modify (x:) >> get
