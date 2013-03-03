@@ -25,28 +25,28 @@ expect p q
   | p == q = pure p
   | otherwise = empty
 
-shift :: (MonadState [a] m, MonadPlus m) => m a
+shift :: (MonadState [a] m, Alternative m) => m a
 shift = do
   xs <- get
   case xs of
-    [] -> mzero
-    (x:xs) -> do { put xs; return x }
+    [] -> empty
+    (x:xs) -> do { put xs; pure x }
 
 unshift :: MonadState [a] m => a -> m [a]
 unshift x = modify (x:) >> get
 
-just :: (Eq a, MonadState [a] m, MonadPlus m, Alternative m) => a -> m a
+just :: (Eq a, MonadState [a] m, Alternative m) => a -> m a
 just a = shift >>= expect a
 
-anywhere :: (MonadState [a] m, MonadPlus m) =>  m a -> m a
-anywhere m = mplus m $ do
+anywhere :: (MonadState [a] m, Alternative m) =>  m a -> m a
+anywhere m = m <|> do
   x <- shift
   a <- anywhere m
   modify (x:)
   return a
 
-include :: (Eq a, MonadState [a] m, MonadPlus m, Alternative m) => a -> a -> m a
+include :: (Eq a, MonadState [a] m, Alternative m) => a -> a -> m a
 include p q = anywhere $ expect p q
 
-extract :: (Eq a, MonadState [a] m, MonadPlus m, Alternative m) => a -> m a
+extract :: (Eq a, MonadState [a] m, Alternative m) => a -> m a
 extract p = shift >>= (anywhere . expect p)
