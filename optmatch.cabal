@@ -19,9 +19,12 @@ source-repository head
   location: https://github.com/pasberth/optmatch.git
 
 library
-  exported-modules:
+  exposed-modules:
       System.Console.OptMatch
     , System.Console.OptMatch.Matcher
     , System.Console.OptMatch.Util
     , System.Console.OptMatch.Args
   ghc-options: -O2
+  build-depends:
+      base == 4.*
+    , mtl == 2.*
