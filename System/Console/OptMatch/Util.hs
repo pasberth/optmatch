@@ -11,10 +11,10 @@ import Control.Monad
 import Control.Monad.State
 
 flag :: Alternative f => f a -> f Bool
-flag v = const True <$> v <|> pure False
+flag v = True <$ v <|> pure False
 
 unflag :: Alternative f => f a -> f Bool
-unflag v = const False <$> v <|> pure True
+unflag v = False <$ v <|> pure True
 
 expect :: (Eq a, MonadPlus m) => a -> m a -> m a
 expect p m = do
