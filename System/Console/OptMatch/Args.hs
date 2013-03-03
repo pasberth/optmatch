@@ -8,7 +8,7 @@ import System.Console.OptMatch.Matcher
 type Args = [String]
 
 keyword :: Monad m => String -> MatcherT Args m String
-keyword s = do { x <- shift; expect s (return x) }
+keyword s = expect s shift
 
 argument :: Monad m => MatcherT Args m String
 argument = shift
