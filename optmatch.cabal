@@ -2,8 +2,8 @@ name:          optmatch
 version:       0.0.1.0
 synopsis:      Moadic Option parsing
 description:   This library provides Applicative style option parsers influenced by Text.Parsec.
-homepage:      https://github.com/pasberth/OptMatch
-bug-reports:   https://github.com/pasberth/OptMatch/issues
+homepage:      https://github.com/pasberth/optmatch
+bug-reports:   https://github.com/pasberth/optmatch/issues
 license:       BSD3
 license-file:  LICENSE
 build-type:    Simple
@@ -16,7 +16,7 @@ cabal-version: >=1.8
 
 source-repository head
   type:     git
-  location: https://github.com/pasberth/OptMatch.git
+  location: https://github.com/pasberth/optmatch.git
 
 library
   exported-modules:
