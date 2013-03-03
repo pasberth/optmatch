@@ -20,12 +20,10 @@ flag v = True <$ v <|> pure False
 unflag :: Alternative f => f a -> f Bool
 unflag v = False <$ v <|> pure True
 
-expect :: (Eq a, MonadPlus m) => a -> m a -> m a
-expect p m = do
-  q <- m
-  if p == q
-     then return p
-     else mzero
+expect :: (Eq a, Alternative f) => a -> a -> f a
+expect p q
+  | p == q = pure p
+  | otherwise = empty
 
 shift :: (MonadState [a] m, MonadPlus m) => m a
 shift = do
@@ -37,8 +35,8 @@ shift = do
 unshift :: MonadState [a] m => a -> m [a]
 unshift x = modify (x:) >> get
 
-just :: (Eq a, MonadState [a] m, MonadPlus m) => a -> m a
-just = flip expect shift
+just :: (Eq a, MonadState [a] m, MonadPlus m, Alternative m) => a -> m a
+just a = shift >>= expect a
 
 anywhere :: (MonadState [a] m, MonadPlus m) =>  m a -> m a
 anywhere m = mplus m $ do
@@ -47,8 +45,8 @@ anywhere m = mplus m $ do
   modify (x:)
   return a
 
-include :: (Eq a, MonadState [a] m, MonadPlus m) => a -> m a -> m a
-include a = anywhere . expect a
+include :: (Eq a, MonadState [a] m, MonadPlus m, Alternative m) => a -> a -> m a
+include p q = anywhere $ expect p q
 
-extract :: (Eq a, MonadState [a] m, MonadPlus m) => a -> m a
-extract = flip include shift
+extract :: (Eq a, MonadState [a] m, MonadPlus m, Alternative m) => a -> m a
+extract p = shift >>= (anywhere . expect p)
