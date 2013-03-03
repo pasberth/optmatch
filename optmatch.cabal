@@ -1,0 +1,27 @@
+name:          optmatch
+version:       0.0.1.0
+synopsis:      Moadic Option parsing
+description:   This library provides Applicative style option parsers influenced by Text.Parsec.
+homepage:      https://github.com/pasberth/OptMatch
+bug-reports:   https://github.com/pasberth/OptMatch/issues
+license:       BSD3
+license-file:  LICENSE
+build-type:    Simple
+author:        pasberth
+maintainer:    pasberth <pasberth@gmail.com>
+copyright:     Copyright (c) 2013, pasberth
+category:      Console
+stability:     experimental
+cabal-version: >=1.8
+
+source-repository head
+  type:     git
+  location: https://github.com/pasberth/OptMatch.git
+
+library
+  exported-modules:
+      System.Console.OptMatch
+    , System.Console.OptMatch.Matcher
+    , System.Console.OptMatch.Util
+    , System.Console.OptMatch.Args
+  ghc-options: -O2
