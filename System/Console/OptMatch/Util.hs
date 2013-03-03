@@ -4,7 +4,8 @@ module System.Console.OptMatch.Util( flag
                                    , unflag
                                    , expect
                                    , shift
-                                   , unshift ) where
+                                   , unshift
+                                   , anywhere ) where
 
 import Control.Applicative
 import Control.Monad
@@ -32,3 +33,10 @@ shift = do
 
 unshift :: MonadState [a] m => a -> m [a]
 unshift x = modify (x:) >> get
+
+anywhere :: (MonadState [a] m, MonadPlus m) =>  m a -> m a
+anywhere m = mplus m $ do
+  x <- shift
+  a <- anywhere m
+  modify (x:)
+  return a
