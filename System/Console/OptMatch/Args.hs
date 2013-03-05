@@ -7,8 +7,8 @@ import System.Console.OptMatch.Matcher
 
 type Args = [String]
 
-keyword :: Monad m => String -> MatcherT Args m String
+keyword :: (Functor m, Monad m) => String -> MatcherT Args m String
 keyword = just
 
-argument :: Monad m => MatcherT Args m String
+argument :: (Functor m, Monad m) => MatcherT Args m String
 argument = shift

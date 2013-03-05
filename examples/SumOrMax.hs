@@ -9,7 +9,7 @@ data Options = Options {
 , numbers :: [Int]
 } deriving (Show)
 
-parser :: Monad m => MatcherT Args m Options
+parser :: (Functor m, Monad m) => MatcherT Args m Options
 parser = do
   isSum <- flag $ anywhere $ keyword "--sum"
   ns <- some (read <$> argument)
@@ -18,8 +18,8 @@ parser = do
 main :: IO ()
 main = do
   args <- getArgs
-  a <- match parser args
+  a <- runMatcherT parser args
   case a of
-    Just opts -> let accumulate = if isSum opts then sum else maximum in
+    Just (opts, args) -> let accumulate = if isSum opts then sum else maximum in
       print $ accumulate $ numbers opts
     Nothing -> putStrLn "Usage: [ --sum ] N [N ...]"
