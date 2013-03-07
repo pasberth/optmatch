@@ -35,16 +35,6 @@ flag v = True <$ v <|> pure False
 unflag :: Alternative f => f a -> f Bool
 unflag v = False <$ v <|> pure True
 
-expect :: (Eq a, Alternative f) => a -> a -> f a
-expect p q
-  | p == q = pure p
-  | otherwise = empty
-
-unexpect :: (Eq a, Alternative f) => a -> a -> f a
-unexpect p q
-  | p /= q = pure p
-  | otherwise = empty
-
 shift :: (MonadState [a] m, MonadPlus m) => m a
 shift = do
   xs <- get
@@ -55,8 +45,12 @@ shift = do
 unshift :: MonadState [a] m => a -> m ()
 unshift x = modify (x:)
 
-just :: (Eq a, MonadState [a] m, MonadPlus m, Alternative m) => a -> m a
-just a = shift >>= expect a
+just :: (Eq a, MonadState [a] m, MonadPlus m) => a -> m a
+just a = do
+  x <- shift
+  if x == a
+    then return a
+    else mzero
 
 anywhere :: (MonadState [a] m, MonadPlus m) =>  m a -> m a
 anywhere m = mplus m $ do
@@ -65,13 +59,7 @@ anywhere m = mplus m $ do
   unshift x
   return a
 
-include :: (Eq a, MonadState [a] m, Alternative m, MonadPlus m) => a -> a -> m a
-include p q = anywhere $ expect p q
-
-extract :: (Eq a, MonadState [a] m, Alternative m, MonadPlus m) => a -> m a
-extract p = shift >>= (anywhere . expect p)
-
-keyword :: (Eq a, MonadState [a] m, MonadPlus m, Alternative m) => a -> m a
+keyword :: (Eq a, MonadState [a] m, MonadPlus m) => a -> m a
 keyword = just
 
 argument :: (MonadState [a] m, MonadPlus m) => m a
