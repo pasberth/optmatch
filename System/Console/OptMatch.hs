@@ -1,5 +1,7 @@
 {-# LANGUAGE FlexibleContexts #-}
-module System.Console.OptMatch( OptMatchT
+module System.Console.OptMatch( OptMatch
+                              , OptMatchT
+                              , runOptMatch
                               , runOptMatchT
                               , flag
                               , unflag
@@ -9,14 +11,23 @@ module System.Console.OptMatch( OptMatchT
 
 import Control.Applicative
 import Control.Monad.Trans
+import Control.Monad.Identity
 import Control.Monad.State
 import Control.Monad.Maybe
 
 type Args = [String]
+type OptMatch = OptMatchT Identity
 type OptMatchT m = StateT Args (MaybeT m)
 
+infixr 9 .+
+(.+) :: (c -> d) -> (a -> b -> c) -> (a -> b -> d)
+f .+ g = \a -> f . g a
+
+runOptMatch :: OptMatch a -> Args -> (Maybe (a, Args))
+runOptMatch = runIdentity .+ runMaybeT .+ runStateT
+
 runOptMatchT :: Monad m => OptMatchT m a -> Args -> m (Maybe (a, Args))
-runOptMatchT m = runMaybeT . runStateT m
+runOptMatchT = runMaybeT .+ runStateT
 
 flag :: Alternative f => f a -> f Bool
 flag v = True <$ v <|> pure False
