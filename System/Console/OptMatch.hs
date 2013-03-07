@@ -1,5 +1,11 @@
 {-# LANGUAGE FlexibleContexts #-}
-module System.Console.OptMatch where
+module System.Console.OptMatch( OptMatchT
+                              , runOptMatchT
+                              , flag
+                              , unflag
+                              , anywhere
+                              , keyword
+                              , argument ) where
 
 import Control.Applicative
 import Control.Monad.Trans
