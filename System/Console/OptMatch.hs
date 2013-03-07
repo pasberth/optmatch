@@ -7,13 +7,15 @@ module System.Console.OptMatch( OptMatch
                               , unflag
                               , anywhere
                               , keyword
-                              , argument ) where
+                              , argument
+                              , prefix ) where
 
 import Control.Applicative
 import Control.Monad.Trans
 import Control.Monad.Identity
 import Control.Monad.State
 import Control.Monad.Maybe
+import qualified Data.List as L
 
 type Args = [String]
 type OptMatch = OptMatchT Identity
@@ -64,3 +66,10 @@ keyword = just
 
 argument :: (MonadState [a] m, MonadPlus m) => m a
 argument = shift
+
+prefix :: (Eq a, MonadState [[a]] m, MonadPlus m) => [a] -> m [a]
+prefix pre = do
+  stream <- shift
+  case L.stripPrefix pre stream of
+    Just suf -> do { unshift suf; return stream }
+    Nothing -> mzero
