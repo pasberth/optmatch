@@ -5,7 +5,6 @@ module System.Console.OptMatch( OptMatch
                               , runOptMatchT
                               , flag
                               , unflag
-                              , anywhere
                               , keyword
                               , argument
                               , prefix ) where
@@ -53,13 +52,6 @@ just a = do
   if x == a
     then return a
     else mzero
-
-anywhere :: (MonadState [a] m, MonadPlus m) =>  m a -> m a
-anywhere m = mplus m $ do
-  x <- shift
-  a <- anywhere m
-  unshift x
-  return a
 
 keyword :: (Eq a, MonadState [a] m, MonadPlus m) => a -> m a
 keyword = just
