@@ -7,7 +7,8 @@ module System.Console.OptMatch( OptMatch
                               , unflag
                               , keyword
                               , argument
-                              , prefix ) where
+                              , prefix
+                              , basic ) where
 
 import Control.Applicative
 import Control.Monad.Trans
@@ -65,3 +66,9 @@ prefix pre = do
   case L.stripPrefix pre stream of
     Just suf -> do { unshift suf; return stream }
     Nothing -> mzero
+
+basic :: (Functor m, Monad m) => a -> (a -> OptMatchT m a) -> OptMatchT m a
+basic def m = f def where
+  f a = do
+    r <- m a
+    basic r m <|> return r

@@ -10,10 +10,13 @@ data Options = Options {
 } deriving (Show)
 
 parser :: OptMatch Options
-parser = do
-  isSum <- flag $ anywhere $ keyword "--sum"
-  ns <- some (read <$> argument)
-  return (Options isSum ns)
+parser = basic defaultOptions $ \opts ->
+  opts { isSum = True } <$ keyword "--sum" <|>
+  (\n -> opts { numbers = read n : numbers opts }) <$> argument where
+    defaultOptions = Options {
+      isSum = False
+    , numbers = []
+      }
 
 main :: IO ()
 main = do
