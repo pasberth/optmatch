@@ -3,6 +3,7 @@ import Control.Monad.State
 import Control.Monad.Trans
 import System.Console.OptMatch
 import System.Console.OptMatch.Basic
+import System.Console.OptMatch.Popular
 import System.Environment(getArgs)
 
 data Options = Options {
@@ -11,7 +12,7 @@ data Options = Options {
 } deriving (Show)
 
 parser :: OptMatch Options
-parser = basic defaultOptions $ \opts ->
+parser = popular defaultOptions $ \opts ->
   opts { isSum = True } <$ keyword "--sum" <|>
   (\n -> opts { numbers = read n : numbers opts }) <$> argument where
     defaultOptions = Options {
