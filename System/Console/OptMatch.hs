@@ -67,6 +67,9 @@ prefix pre = do
     Just suf -> do { unshift suf; return stream }
     Nothing -> mzero
 
+subst :: (MonadState Args m, MonadPlus m) => String -> m String
+subst = prefix . (++"=")
+
 basic :: (Functor m, Monad m) => a -> (a -> OptMatchT m a) -> OptMatchT m a
 basic def m = f def where
   f a = do
