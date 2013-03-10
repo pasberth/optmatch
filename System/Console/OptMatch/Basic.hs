@@ -7,11 +7,11 @@ import System.Console.OptMatch
 import System.Console.OptMatch.Types
 import System.Console.OptMatch.Prim
 
-keyword :: (Eq a, MonadState [a] m, MonadPlus m) => a -> m a
+keyword :: Monad m => String -> OptMatchT m String
 keyword = just
 
-argument :: (MonadState [a] m, MonadPlus m) => m a
+argument :: Monad m => OptMatchT m String
 argument = shift
 
-subst :: (MonadState Args m, MonadPlus m) => String -> m String
+subst :: Monad m => String -> OptMatchT m String
 subst = prefix . (++"=")
