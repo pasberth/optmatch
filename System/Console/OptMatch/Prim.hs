@@ -11,6 +11,11 @@ flag v = True <$ v <|> pure False
 unflag :: Alternative f => f a -> f Bool
 unflag v = False <$ v <|> pure True
 
+unexpect :: MonadPlus m => m a -> m ()
+unexpect m = do
+  x <- mplus (m >> return True) (return False)
+  if x then mzero else return ()
+
 shift :: Monad m => OptMatchT m String
 shift = do
   xs <- get
