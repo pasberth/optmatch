@@ -21,6 +21,10 @@ source-repository head
 library
   exposed-modules:
       System.Console.OptMatch
+    , System.Console.OptMatch.Types
+    , System.Console.OptMatch.Prim
+    , System.Console.OptMatch.Basic
+    , System.Console.OptMatch.Popular
   ghc-options: -O2
   build-depends:
       base == 4.*
