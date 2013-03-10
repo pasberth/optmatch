@@ -3,7 +3,7 @@ module System.Console.OptMatch.Popular where
 import Control.Applicative
 import Control.Monad
 import System.Console.OptMatch
-import System.Console.OptMatch.Prim
+import System.Console.OptMatch.Basic
 
 popular :: (Functor m, Monad m) => a -> (a -> OptMatchT m a) -> OptMatchT m a
 popular a m = do
@@ -20,3 +20,9 @@ expandShortOptions = do
   str <- shift
   forM (reverse str) $ \c -> unshift ['-', c]
   return ()
+
+keyword :: Monad m => String -> OptMatchT m String
+keyword = just
+
+argument :: Monad m => OptMatchT m String
+argument = unexpect (prefix "-") >> shift

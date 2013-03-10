@@ -2,7 +2,6 @@ import Control.Applicative
 import Control.Monad.State
 import Control.Monad.Trans
 import System.Console.OptMatch
-import System.Console.OptMatch.Basic
 import System.Console.OptMatch.Popular
 import System.Environment(getArgs)
 
