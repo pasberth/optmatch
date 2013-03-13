@@ -3,6 +3,7 @@ module System.Console.OptMatch.Basic where
 import Control.Applicative
 import Control.Monad.State
 import System.Console.OptMatch
+import System.Console.OptMatch.Types
 import qualified Data.Char as C
 import qualified Data.List as L
 
@@ -27,22 +28,22 @@ shift = do
 unshift :: Monad m => String -> OptMatchT m ()
 unshift x = modify (x:)
 
-just :: Monad m => String -> OptMatchT m String
+just :: (Monad m, ArgType a) => a -> OptMatchT m a
 just a = do
   x <- shift
-  if x == a
+  if x == toArg a
     then return a
     else mzero
 
-prefix :: Monad m => String -> OptMatchT m String
+prefix :: (Monad m, ArgType a) => a -> OptMatchT m ()
 prefix pre = do
   stream <- shift
-  case L.stripPrefix pre stream of
-    Just suf -> do { unshift suf; return stream }
+  case L.stripPrefix (toArg pre) stream of
+    Just suf -> unshift suf
     Nothing -> mzero
 
-subst :: Monad m => String -> OptMatchT m String
-subst = prefix . (++"=")
+subst :: (Monad m, ArgType a) => a -> OptMatchT m ()
+subst = prefix . (++"=") . toArg
 
 integer :: Monad m => OptMatchT m Integer
 integer = do
@@ -51,9 +52,7 @@ integer = do
     then return $ read x
     else mzero
 
-choices :: Monad m => [String] -> OptMatchT m String
+choices :: (Monad m, ArgType a) => [a] -> OptMatchT m a
 choices l = do
   x <- shift
-  if any (==x) l
-    then return x
-    else mzero
+  foldl (\a b -> mplus a (if toArg b == x then return b else mzero)) mzero l
