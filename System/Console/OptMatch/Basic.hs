@@ -50,3 +50,10 @@ integer = do
   if all C.isDigit x
     then return $ read x
     else mzero
+
+choices :: Monad m => [String] -> OptMatchT m String
+choices l = do
+  x <- shift
+  if any (==x) l
+    then return x
+    else mzero
