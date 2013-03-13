@@ -3,6 +3,7 @@ module System.Console.OptMatch.Basic where
 import Control.Applicative
 import Control.Monad.State
 import System.Console.OptMatch
+import qualified Data.Char as C
 import qualified Data.List as L
 
 flag :: Alternative f => f a -> f Bool
@@ -42,3 +43,10 @@ prefix pre = do
 
 subst :: Monad m => String -> OptMatchT m String
 subst = prefix . (++"=")
+
+integer :: Monad m => OptMatchT m Integer
+integer = do
+  x <- shift
+  if all C.isDigit x
+    then return $ read x
+    else mzero

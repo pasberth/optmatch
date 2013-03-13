@@ -1,17 +1,18 @@
 import Control.Applicative
 import System.Console.OptMatch
+import System.Console.OptMatch.Basic
 import System.Console.OptMatch.Popular
 import System.Environment(getArgs)
 
 data Options = Options {
   isSum :: Bool
-, numbers :: [Int]
+, numbers :: [Integer]
 } deriving (Show)
 
 parser :: OptMatch Options
 parser = popular defaultOptions $ \opts ->
   opts { isSum = True } <$ keyword "--sum" <|>
-  (\n -> opts { numbers = read n : numbers opts }) <$> argument where
+  (\n -> opts { numbers = n : numbers opts }) <$> integer where
     defaultOptions = Options {
       isSum = False
     , numbers = []
